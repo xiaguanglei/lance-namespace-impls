@@ -13,10 +13,59 @@
  */
 package org.lance.namespace.hive3;
 
+import org.apache.hadoop.conf.Configuration;
+
+import java.util.Map;
+
 /** Common utility methods. */
 public class CommonUtil {
 
   private CommonUtil() {}
+
+  private static final String CATALOG_HADOOP_PREFIX = "hadoop.";
+
+  /**
+   * True if {@code properties} contains any {@code hadoop.*} catalog key (Spark {@code
+   * spark.sql.catalog.*.hadoop.*}).
+   */
+  public static boolean hasCatalogHadoopOverrides(Map<String, String> properties) {
+    if (properties == null) {
+      return false;
+    }
+    for (String k : properties.keySet()) {
+      if (k != null
+              && k.length() > CATALOG_HADOOP_PREFIX.length()
+              && k.regionMatches(true, 0, CATALOG_HADOOP_PREFIX, 0, CATALOG_HADOOP_PREFIX.length())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Merges Spark per-catalog Hadoop overrides into {@code conf}. These correspond to {@code
+   * spark.sql.catalog.&lt;name&gt;.hadoop.*} keys: entries in {@code properties} use the suffix
+   * after the catalog prefix, e.g. {@code hadoop.hive.metastore.uris} {@code ->} {@code
+   * hive.metastore.uris}.
+   */
+  public static void applyCatalogHadoopOverrides(
+          Configuration conf, Map<String, String> properties) {
+    if (properties == null || conf == null) {
+      return;
+    }
+    for (Map.Entry<String, String> e : properties.entrySet()) {
+      String k = e.getKey();
+      String v = e.getValue();
+      if (k == null || v == null) {
+        continue;
+      }
+      if (k.length() > CATALOG_HADOOP_PREFIX.length()
+              && k.regionMatches(true, 0, CATALOG_HADOOP_PREFIX, 0, CATALOG_HADOOP_PREFIX.length())) {
+        conf.set(k.substring(CATALOG_HADOOP_PREFIX.length()), v);
+      }
+    }
+  }
+
 
   public static String formatCurrentStackTrace() {
     StackTraceElement[] stack = Thread.currentThread().getStackTrace();

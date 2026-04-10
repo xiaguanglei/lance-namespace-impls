@@ -93,9 +93,13 @@ public class Hive2Namespace implements LanceNamespace {
   public void initialize(Map<String, String> configProperties, BufferAllocator allocator) {
     this.allocator = allocator;
     if (hadoopConf == null) {
-      LOG.warn("Hadoop configuration not set, using the default configuration.");
       hadoopConf = new Configuration();
+      if (!CommonUtil.hasCatalogHadoopOverrides(configProperties)) {
+        LOG.warn("No Hadoop Configuration was set via setHadoopConf() and no spark.sql.catalog.*.hadoop.* keys were "
+                + "provided; using an empty Configuration (Hive may load hive-site.xml from the classpath).");
+      }
     }
+    CommonUtil.applyCatalogHadoopOverrides(hadoopConf, configProperties);
     this.config = new Hive2NamespaceConfig(configProperties);
     this.clientPool = new Hive2ClientPool(config.getClientPoolSize(), hadoopConf);
   }
