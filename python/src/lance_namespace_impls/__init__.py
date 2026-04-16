@@ -8,6 +8,7 @@ This package provides third-party catalog implementations for Lance Namespace:
 - GlueNamespace: AWS Glue Data Catalog
 - Hive2Namespace: Apache Hive 2.x Metastore
 - Hive3Namespace: Apache Hive 3.x Metastore (with catalog support)
+- Hive4Namespace: Apache Hive 4.x Metastore
 - IcebergNamespace: Apache Iceberg REST Catalog
 - PolarisNamespace: Apache Polaris Catalog
 - UnityNamespace: Unity Catalog
@@ -21,6 +22,7 @@ Shared infrastructure:
 from lance_namespace_impls.glue import GlueNamespace
 from lance_namespace_impls.hive2 import Hive2Namespace
 from lance_namespace_impls.hive3 import Hive3Namespace
+from lance_namespace_impls.hive4 import Hive4Namespace
 from lance_namespace_impls.iceberg import IcebergNamespace
 from lance_namespace_impls.polaris import PolarisNamespace
 from lance_namespace_impls.unity import UnityNamespace
@@ -40,6 +42,7 @@ __all__ = [
     "GlueNamespace",
     "Hive2Namespace",
     "Hive3Namespace",
+    "Hive4Namespace",
     "IcebergNamespace",
     "PolarisNamespace",
     "UnityNamespace",
