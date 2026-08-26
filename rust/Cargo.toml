@@ -1,0 +1,3 @@
+[workspace]
+members = ["lance-namespace-hive"]
+resolver = "2"

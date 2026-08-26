@@ -1,0 +1,26 @@
+[package]
+name = "lance-namespace-hive"
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+description = "Hive 2/3/4 namespace semantics for Lance"
+
+[features]
+default = ["hms-sasl"]
+# Native, read-only Hive Metastore transport.  It uses the operating system's
+# GSSAPI implementation and its existing credential cache; it never reads a
+# keytab or implements Kerberos cryptography itself.
+hms-sasl = ["dep:libgssapi"]
+# Builds the adapter against the local Lance Rust namespace trait used by the
+# internal hdfs-native Lance/LanceDB branches.
+lance-namespace-api = ["dep:lance-namespace"]
+
+[dependencies]
+async-trait = "0.1"
+libgssapi = { version = "0.11", optional = true }
+thiserror = "2"
+tokio = { version = "1", features = ["macros", "rt"] }
+lance-namespace = { path = "../../../lance/rust/lance-namespace", optional = true }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["macros", "rt"] }
